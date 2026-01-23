@@ -57,3 +57,6 @@ teleimager = { path = ".", editable = true, extras = ["server"] }
 
 [tool.pixi.dependencies]
 librealsense = ">=2.56.5,<3"
+
+[tool.pixi.tasks]
+install_zed = "pip install --no-deps ./pyzed-5.1-cp310-cp310-linux_aarch64.whl"

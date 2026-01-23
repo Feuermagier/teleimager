@@ -1389,7 +1389,7 @@ packages:
 - pypi: ./
   name: teleimager
   version: 1.5.0
-  sha256: 76a42c5cda040fc618d12804080a8e33f319e2601348826f7e44d00cb10f0164
+  sha256: 671e25500ec18e4d1ab7509c0d15758cc6ee0b4559882fdcfe4d38d0efecc201
   requires_dist:
   - logging-mp
   - opencv-python
