@@ -90,7 +90,7 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
                 "preset": "ultrafast",
                 "tune": "zerolatency",
                 "threads": "1",
-                "g": "60",
+                "g": "12",
             }
             self.frame_count = 0
             force_keyframe = True
@@ -934,6 +934,7 @@ class RealSenseCamera(BaseCamera):
                     self.pipeline.stop()
                 except:
                     pass
+            raise e
             raise RuntimeError(f"[RealSenseCamera] Failed to initialize RealSense camera {self._serial_number}: {e}")
 
     def __str__(self):
