@@ -24,7 +24,7 @@ import signal
 import functools
 import subprocess
 import platform
-from .image_client import TripleRingBuffer, ZMQ_PublisherManager, ZMQ_Responser
+from .image_client import ZMQ_PublisherManager, ZMQ_Responser
 # webrtc dependencies
 import asyncio
 import json
@@ -40,6 +40,10 @@ import queue
 import fractions
 from typing import Dict, Optional, Tuple, Any
 import logging_mp
+
+from teleimager.base_camera import BaseCamera
+from teleimager.zed import ZedCamera
+
 logging_mp.basic_config(level=logging_mp.INFO)
 logger_mp = logging_mp.get_logger(__name__)
 
@@ -555,7 +559,7 @@ class CameraFinder:
     dev_info: extra info from uvc
     sn: serial number of the camera
     """
-    def __init__(self, realsense_enable=False, verbose=False):
+    def __init__(self, realsense_enable=False, zed_enable=False, verbose=False):
         self.verbose = verbose
         # uvc
         reload_uvc_driver()
@@ -573,6 +577,11 @@ class CameraFinder:
             self.rs_serial_numbers = []
             self.rs_video_paths = []
             self.rs_rgb_video_paths = []
+        # zed
+        if zed_enable:
+            self.zed_serial_numbers = ZedCamera.find_all()
+        else:
+            self.zed_serial_numbers = []
         # rgb & uvc
         self.uvc_rgb_video_paths = self._list_uvc_rgb_video_paths()
         self.uvc_rgb_video_ids = [int(v.replace("/dev/video", "")) for v in self.uvc_rgb_video_paths]
@@ -795,6 +804,10 @@ class CameraFinder:
             logger_mp.info(f"RealSense video paths: {self.rs_video_paths}")
             logger_mp.info(f"RealSense RGB-like video paths: {self.rs_rgb_video_paths}")
 
+        if self.zed_serial_numbers:
+            logger_mp.info("----------------------- Zed Cameras ----------------------------------")
+            logger_mp.info(f"Zed serial numbers: {self.zed_serial_numbers}")
+
         for idx, (vpath, cam) in enumerate(self.uvc_rgb_cameras.items(), start=1):
             logger_mp.info("----------------------- OpenCV / UVC Camera %d -----------------------------", idx)
             logger_mp.info("video_path    : %s", vpath)
@@ -823,80 +836,6 @@ class CameraFinder:
 
         logger_mp.info("=========================== Camera Discovery End ================================")
 
-class BaseCamera:
-    def __init__(self, cam_topic, img_shape, fps, 
-                 enable_zmq=True, zmq_port=55555, enable_webrtc=False, webrtc_port=66666, webrtc_codec=None):
-        self._ready = threading.Event()
-        self._cam_topic = cam_topic
-        self._img_shape = img_shape # (H, W)
-        self._fps = fps
-        self._enable_zmq = enable_zmq
-        self._zmq_port = zmq_port
-        if self._enable_zmq:
-            self._zmq_buffer = TripleRingBuffer()
-        else:
-            self._zmq_buffer = None
-
-        self._enable_webrtc = enable_webrtc
-        self._webrtc_port = webrtc_port
-        self._webrtc_codec = webrtc_codec
-        if self._enable_webrtc:
-            self._webrtc_buffer = TripleRingBuffer()
-        else:
-            self._webrtc_buffer = None
-
-    def __str__(self):
-        raise NotImplementedError
-    
-    def __repr__(self):
-        return self.__str__()
-
-    def _update_frame(self):
-        """Return a jepg frame as bytes, and a bgr frame as numpy array"""
-        raise NotImplementedError
-    
-    def wait_until_ready(self, timeout=None):
-        """Block until the camera is ready (first frame is available) or timeout occurs."""
-        return self._ready.wait(timeout=timeout)
-
-    def enable_webrtc(self):
-        return self._enable_webrtc
-    
-    def enable_zmq(self):
-        return self._enable_zmq
-
-    def get_jpeg_bytes(self):
-        jpeg_bytes = self._zmq_buffer.read() if self._enable_zmq and self._zmq_buffer else None
-        return jpeg_bytes
-
-    def get_bgr_frame(self):
-        bgr_numpy = self._webrtc_buffer.read() if self._enable_webrtc and self._webrtc_buffer else None
-        return bgr_numpy
-
-    def get_depth_frame(self):
-        """Return a depth frame as bytes, or None if not supported. 
-           Before call this function, must first call get_frame() to update the latest depth data."""
-        return None
-
-    def get_zmq_port(self):
-        """Return the zmq port number the camera is serving on."""
-        return self._zmq_port
-    
-    def get_webrtc_port(self):
-        """Return the webrtc port number the camera is serving on."""
-        return self._webrtc_port
-    
-    def get_webrtc_codec(self):
-        """Return the webrtc codec setting."""
-        return self._webrtc_codec
-
-    def get_fps(self):
-        """Return the camera FPS setting."""
-        return self._fps
-
-    def release(self):
-        """Release camera resources."""
-        raise NotImplementedError
 
 class RealSenseCamera(BaseCamera):
     def __init__(self, cam_topic, serial_number, img_shape, fps, 
@@ -969,6 +908,7 @@ class RealSenseCamera(BaseCamera):
                 self._latest_depth = None
 
         bgr_numpy = np.asanyarray(color_frame.get_data())
+        print(bgr_numpy.shape, bgr_numpy.dtype)
 
         if self._enable_webrtc:
             self._webrtc_buffer.write(bgr_numpy)
@@ -1276,6 +1216,9 @@ class ImageServer:
                     else:
                         self._cameras[cam_topic] = RealSenseCamera(cam_topic, serial_number, img_shape, fps,
                                                                    enable_zmq, zmq_port, enable_webrtc, webrtc_port, webrtc_codec)
+                elif cam_type == "zed":
+                    self._cameras[cam_topic] = ZedCamera(cam_topic, serial_number, img_shape, fps, 
+                                                         enable_zmq, zmq_port, enable_webrtc, webrtc_port, webrtc_codec)
 
                 elif cam_type == "uvc":
                     uid = None
@@ -1340,7 +1283,7 @@ class ImageServer:
                 except Exception as e:
                     logger_mp.error(f"[Image Server] Error updating frame for {cam_topic} camera")
                     self._stop_event.set()
-                    break
+                    raise
                 next_frame_time += interval
                 sleep_time = next_frame_time - time.monotonic()
                 if sleep_time > 0:
@@ -1350,6 +1293,7 @@ class ImageServer:
         except Exception as e:
             logger_mp.error(f"[Image Server] Failed to update frames for {cam_topic} camera: {e}")
             self._stop_event.set()
+            raise
 
     def _zmq_pub(self, cam_topic: str, camera: BaseCamera):
         try:
@@ -1529,7 +1473,8 @@ def main():
     # command line args
     parser = argparse.ArgumentParser()
     parser.add_argument('--cf', action = 'store_true', help = 'Enable camera found mode, print all connected cameras info')
-    parser.add_argument('--rs', action = 'store_true', help = 'Enable RealSense camera mode. Otherwise only find UVC/OpenCV cameras.')
+    parser.add_argument('--rs', action = 'store_true', help = 'Enable RealSense camera mode.')
+    parser.add_argument('--zed', action = 'store_true', help = 'Enable Zed camera mode.')
     parser.add_argument('--no-affinity', action='store_false', dest='affinity', help='Disable CPU affinity setting for performance optimization.')
     args = parser.parse_args()
 
@@ -1538,7 +1483,7 @@ def main():
 
     # if enable camera finder mode, just print cameras info and exit
     if args.cf:
-        CameraFinder(realsense_enable=args.rs, verbose=True)
+        CameraFinder(realsense_enable=args.rs, zed_enable=args.zed, verbose=True)
         exit(0)
 
     # Load config file, start image server

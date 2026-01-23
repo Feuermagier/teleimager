@@ -15,6 +15,10 @@ dependencies = [
     "pyyaml",
     "pyzmq",
     "psutil>=7.2.1",
+    "opencv-python-headless",
+    "pyopengl",
+    "requests",
+    "pip",
 ]
 [project.optional-dependencies]
 # execute pip install -e ".[server]" to install server dependencies
