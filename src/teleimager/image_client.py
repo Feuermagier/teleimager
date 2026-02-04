@@ -29,6 +29,7 @@ import numpy as np
 import yaml
 import os
 import logging_mp
+from turbojpeg import TurboJPEG
 logger_mp = logging_mp.get_logger(__name__, level=logging_mp.INFO)
 
 # ========================================================
@@ -79,14 +80,16 @@ class ZMQ_PublisherThread(threading.Thread):
         self._queue = queue.Queue(maxsize=10)  # Limit queue size to prevent memory issues
         self._started = threading.Event()
 
+        self.jpeg_encoder = TurboJPEG()
+
     def send(self, data: Any) -> None:
         """Send data to the publisher queue (thread-safe).
 
         Args:
             data: The data to publish
         """
-        if not isinstance(data, (bytes, bytearray, memoryview)):
-            raise TypeError(f"PublisherThread expects bytes, got {type(data)}")
+        if not isinstance(data, np.ndarray):
+            raise TypeError(f"PublisherThread expects numpy array, got {type(data)}")
 
         try:
             self._queue.put_nowait(data)
@@ -125,8 +128,10 @@ class ZMQ_PublisherThread(threading.Thread):
                     if data is None:
                         break
 
+                    data_jpeg = self.jpeg_encoder.encode(data)
+
                     try:
-                        self._socket.send(data, zmq.NOBLOCK)
+                        self._socket.send(data_jpeg, zmq.NOBLOCK)
                     except zmq.Again:
                         logger_mp.warning(f"High water mark reached for at {self._host}:{self._port}, dropping message")
                     except zmq.ZMQError as e:

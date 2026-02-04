@@ -77,64 +77,63 @@ KEY_PEM_PATH = KEY_PEM_PATH.resolve()
 # libx264 for Jetson (Patch h264 Encoder)
 # ========================================================
 def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: bool):
-    print(frame.width, frame.height)
     if self.codec and (frame.width != self.codec.width or frame.height != self.codec.height):
         self.codec = None
 
     if self.codec is None:
-        # self.codec = av.CodecContext.create("libx264", "w")
+        self.codec = av.CodecContext.create("libx264", "w")
+        self.codec.width = frame.width
+        self.codec.height = frame.height
+        self.codec.bit_rate = self.target_bitrate
+        self.codec.pix_fmt = "yuv420p"
+        self.codec.framerate = fractions.Fraction(30, 1)
+        self.codec.time_base = fractions.Fraction(1, 30)
+    
+        self.codec.options = {
+            "preset": "ultrafast",
+            "tune": "zerolatency",
+            # "g": "12",
+            # "g": "30",
+            "crf": "23",
+            "maxrate": "6M",
+            "bufsize": "500k",
+            "intra-refresh": "1",
+            "threads": "4",
+            "sliced_threads": "1",
+            "no-mbtree": "1",           # Disable macroblock tree (lookahead)
+            "rc-lookahead": "0",        # Ensure zero lookahead
+        }
+
+        # # Use the NVIDIA Hardware Encoder
+        # print("creating encoder...")
+        # # self.codec = av.CodecContext.create("h264_nvenc", "w")
+        # self.codec = av.CodecContext.create("h264_v4l2m2m", "w")
+        # print("encoder created")
         # self.codec.width = frame.width
         # self.codec.height = frame.height
-        # self.codec.bit_rate = self.target_bitrate
-        # self.codec.pix_fmt = "yuv420p"
-        # self.codec.framerate = fractions.Fraction(30, 1)
+        # self.codec.pix_fmt = "yuv420p" # NVENC usually requires yuv420p
+        
+        # # self.codec.options = {
+        # #     "preset": "p1",             # p1 is "fastest/lowest latency" in NVENC
+        # #     "tune": "ull",              # Ultra-Low Latency
+        # #     "rc": "vbr",                # Variable Bitrate
+        # #     "cq": "24",                 # Constant Quality (similar to CRF)
+        # #     "delay": "0",               # Force zero-frame delay
+        # #     "forced-idr": "1",          # Ensure I-frames are clean
+        # # }
+        # self.codec.bit_rate = 8000000
+        # self.codec.gop_size = 30
+        # self.codec.max_b_frames = 0
+        # self.codec.thread_count = 1
         # self.codec.time_base = fractions.Fraction(1, 30)
-    
-        # self.codec.options = {
-        #     "preset": "ultrafast",
-        #     "tune": "zerolatency",
-        #     "threads": "1",
-        #     # "g": "12",
-        #     # "g": "30",
-        #     "crf": "22",
-        #     "maxrate": "8M",
-        #     "buffersize": "16M",
-        #     "intra-refresh": "1"
-        # }
+        # self.codec.framerate = fractions.Fraction(30, 1)
+        # print("encoder configured")
 
-        try:
-            # Use the NVIDIA Hardware Encoder
-            print("creating encoder...")
-            # self.codec = av.CodecContext.create("h264_nvenc", "w")
-            self.codec = av.CodecContext.create("h264_v4l2m2m", "w")
-            print("encoder created")
-            self.codec.width = frame.width
-            self.codec.height = frame.height
-            self.codec.pix_fmt = "yuv420p" # NVENC usually requires yuv420p
-            
-            # self.codec.options = {
-            #     "preset": "p1",             # p1 is "fastest/lowest latency" in NVENC
-            #     "tune": "ull",              # Ultra-Low Latency
-            #     "rc": "vbr",                # Variable Bitrate
-            #     "cq": "24",                 # Constant Quality (similar to CRF)
-            #     "delay": "0",               # Force zero-frame delay
-            #     "forced-idr": "1",          # Ensure I-frames are clean
-            # }
-            self.codec.bit_rate = 8000000
-            self.codec.gop_size = 30
-            self.codec.max_b_frames = 0
-            self.codec.thread_count = 1
-            self.codec.time_base = fractions.Fraction(1, 30)
-            self.codec.framerate = fractions.Fraction(30, 1)
-            print("encoder configured")
-
-            self.frame_count = 0
-            force_keyframe = True
-        except Exception as e:
-            print(e)
-
-    if not force_keyframe and hasattr(self, "frame_count") and self.frame_count % 60 == 0:
+        self.frame_count = 0
         force_keyframe = True
+
+    # if not force_keyframe and hasattr(self, "frame_count") and self.frame_count % 60 == 0:
+    #     force_keyframe = True
     
     self.frame_count = self.frame_count + 1 if hasattr(self, "frame_count") else 1
     frame.pict_type = av.video.frame.PictureType.I if force_keyframe else av.video.frame.PictureType.NONE
@@ -143,7 +142,7 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
         t = time.perf_counter()
         packets = self.codec.encode(frame)
         encoding_time = (time.perf_counter() - t) * 1000
-        print("encoding time", encoding_time)
+        # print("encoding time", encoding_time)
     except Exception as e:
         print("encoding failed", e)
 
@@ -153,7 +152,7 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
         total_size += len(data)
         if data:
             yield from self._split_bitstream(data)
-    print("outgoing kbytes", total_size / 1000)
+    # print("outgoing kbytes", total_size / 1000)
 
 h264.H264Encoder._encode_frame = jetson_software_encode_frame
 
@@ -313,7 +312,9 @@ class BGRArrayVideoStreamTrack(MediaStreamTrack):
         # 1. Convert and calculate PTS immediately
         # MediaRelay requires consistent PTS to function correctly
         try:
-            video_frame = av.VideoFrame.from_ndarray(bgr_numpy, format="bgr24")
+            # convert to yuv with opencv which is faster than whatever av is doing
+            yuv_frame = cv2.cvtColor(bgr_numpy, cv2.COLOR_BGR2YUV_I420)
+            video_frame = av.VideoFrame.from_ndarray(yuv_frame, format="yuv420p")
             
             if self._start_time is None:
                 self._start_time = time.time()
@@ -493,9 +494,9 @@ class WebRTC_PublisherThread(threading.Thread):
                         self._bgr_track.push_frame(frame, loop=self._loop)
                     
                     # CRITICAL: Yield control to asyncio loop to handle WebRTC packets
-                    await asyncio.sleep(0.005)
+                    await asyncio.sleep(0)
                 except Exception:
-                    await asyncio.sleep(0.005)
+                    await asyncio.sleep(0.01)
 
         try:
             self._loop.run_until_complete(_main())
@@ -1313,21 +1314,25 @@ class ImageServer:
 
     def _update_frames(self, cam_topic: str, camera: BaseCamera):
         try:
+            webrtc_codec = camera.get_webrtc_codec()
             interval = 1.0 / camera.get_fps()
             next_frame_time = time.monotonic()
             while not self._stop_event.is_set():
                 try:
                     camera._update_frame()
+                    frame = camera.get_bgr_frame()
+                    self._webrtc_publisher_manager.publish(frame, camera.get_webrtc_port(), codec_pref=webrtc_codec)
+                    self._zmq_publisher_manager.publish(frame, camera.get_zmq_port())
                 except Exception as e:
                     logger_mp.error(f"[Image Server] Error updating frame for {cam_topic} camera")
                     self._stop_event.set()
                     raise
-                next_frame_time += interval
-                sleep_time = next_frame_time - time.monotonic()
-                if sleep_time > 0:
-                    time.sleep(sleep_time)
-                else:
-                    next_frame_time = time.monotonic()
+                # next_frame_time += interval
+                # sleep_time = next_frame_time - time.monotonic()
+                # if sleep_time > 0:
+                #     time.sleep(sleep_time)
+                # else:
+                #     next_frame_time = time.monotonic()
         except Exception as e:
             logger_mp.error(f"[Image Server] Failed to update frames for {cam_topic} camera: {e}")
             self._stop_event.set()
@@ -1435,16 +1440,16 @@ class ImageServer:
                 self._clean_up()
             logger_mp.info(f"[Image Server] {camera_topic} is ready.")
         
-        for camera_topic, camera in self._cameras.items():
-            if camera.enable_webrtc():
-                t = threading.Thread(target=self._webrtc_pub, args=(camera_topic, camera), daemon=True)
-                t.start()
-                self._publisher_threads.append(t)
+        # for camera_topic, camera in self._cameras.items():
+        #     if camera.enable_webrtc():
+        #         t = threading.Thread(target=self._webrtc_pub, args=(camera_topic, camera), daemon=True)
+        #         t.start()
+        #         self._publisher_threads.append(t)
 
-            if camera.enable_zmq():
-                t = threading.Thread(target=self._zmq_pub, args=(camera_topic, camera), daemon=True)
-                t.start()
-                self._publisher_threads.append(t)
+        #     if camera.enable_zmq():
+        #         t = threading.Thread(target=self._zmq_pub, args=(camera_topic, camera), daemon=True)
+        #         t.start()
+        #         self._publisher_threads.append(t)
 
     def wait(self):
         self._stop_event.wait()

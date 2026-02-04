@@ -19,6 +19,7 @@ dependencies = [
     "pyopengl",
     "requests",
     "pip",
+    "pyturbojpeg>=1.8.2",
 ]
 [project.optional-dependencies]
 # execute pip install -e ".[server]" to install server dependencies

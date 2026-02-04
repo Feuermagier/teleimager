@@ -64,6 +64,7 @@ class ZedCamera(BaseCamera):
 
         self.image_left = self.sl.Mat()
         self.image_right = self.sl.Mat()
+        self.image_both = self.sl.Mat()
         self.depth = self.sl.Mat()
         self.runtime_parameters = self.sl.RuntimeParameters()
 
@@ -80,21 +81,28 @@ class ZedCamera(BaseCamera):
             ) from e
     
     def _update_frame(self):
+        t = time.perf_counter()
         self._retrieve_images()
+        # print("zed", (time.perf_counter() - t) * 1000)
 
-        image_left = np.copy(self.image_left.get_data())[..., :3]  # BGR
-        image_right = np.copy(self.image_right.get_data())[..., :3]  # BGR
-        # depth = np.copy(self.depth.get_data())
+        # image_left = np.copy(self.image_left.get_data())[..., :3]  # BGR
+        # image_right = np.copy(self.image_right.get_data())[..., :3]  # BGR
+        # # depth = np.copy(self.depth.get_data())
 
-        full_frame = cv2.hconcat([image_left, image_right])
+        # t = time.perf_counter()
+        # full_frame = cv2.hconcat([image_left, image_right])
+        # print("hconcat", (time.perf_counter() - t) * 1000)
+        full_frame = np.copy(self.image_both.get_data())[..., :3]
 
         if self._enable_webrtc:
             self._webrtc_buffer.write(full_frame)
 
-        if self._enable_zmq:
-            ok, buf = cv2.imencode(".jpg", full_frame)
-            if ok:
-                self._zmq_buffer.write(buf.tobytes())
+        # if self._enable_zmq:
+        #     t = time.perf_counter()
+        #     # buf = cv2.imencode(".jpg", full_frame)[1].tobytes()
+        #     buf = self.jpeg_encoder.encode(full_frame, quality=85)
+        #     print("jpeg", (time.perf_counter() - t) * 1000)
+        #     self._zmq_buffer.write(buf)
         
         if not self._ready.is_set():
             self._ready.set()
@@ -103,14 +111,15 @@ class ZedCamera(BaseCamera):
         if self.zed is None:
             raise RuntimeError(f"Not connected to {self.name}")
 
-        if (err := self.zed.grab(self.runtime_parameters)) == self.sl.ERROR_CODE.SUCCESS:
-            self.zed.retrieve_image(self.image_left, self.sl.VIEW.LEFT)
-            self.zed.retrieve_image(self.image_right, self.sl.VIEW.RIGHT)
+        status = self.zed.grab(self.runtime_parameters)
+        if status == self.sl.ERROR_CODE.SUCCESS:
+            # self.zed.retrieve_image(self.image_left, self.sl.VIEW.LEFT)
+            # self.zed.retrieve_image(self.image_right, self.sl.VIEW.RIGHT)
+            self.zed.retrieve_image(self.image_both, self.sl.VIEW.SIDE_BY_SIDE)
             # self.zed.retrieve_measure(self.depth, self.sl.MEASURE.DEPTH)
             # self.zed.retrieve_measure(point_cloud, sl.MEASURE.XYZRGBA)
         else:
-            logger_mp.error(f"Failed to retrieve images from {self.name}: {err}")
-            raise RuntimeError(f"Failed to retrieve images from {self.name}: {err}")
+            raise RuntimeError(f"Failed to retrieve images from {self.name}: {status}")
 
     def get_depth_frame(self):
         if self._latest_depth is None:
