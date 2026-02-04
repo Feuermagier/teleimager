@@ -77,30 +77,61 @@ KEY_PEM_PATH = KEY_PEM_PATH.resolve()
 # libx264 for Jetson (Patch h264 Encoder)
 # ========================================================
 def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: bool):
+    print(frame.width, frame.height)
     if self.codec and (frame.width != self.codec.width or frame.height != self.codec.height):
         self.codec = None
 
     if self.codec is None:
+        # self.codec = av.CodecContext.create("libx264", "w")
+        # self.codec.width = frame.width
+        # self.codec.height = frame.height
+        # self.codec.bit_rate = self.target_bitrate
+        # self.codec.pix_fmt = "yuv420p"
+        # self.codec.framerate = fractions.Fraction(30, 1)
+        # self.codec.time_base = fractions.Fraction(1, 30)
+    
+        # self.codec.options = {
+        #     "preset": "ultrafast",
+        #     "tune": "zerolatency",
+        #     "threads": "1",
+        #     # "g": "12",
+        #     # "g": "30",
+        #     "crf": "22",
+        #     "maxrate": "8M",
+        #     "buffersize": "16M",
+        #     "intra-refresh": "1"
+        # }
+
         try:
-            self.codec = av.CodecContext.create("libx264", "w")
+            # Use the NVIDIA Hardware Encoder
+            print("creating encoder...")
+            # self.codec = av.CodecContext.create("h264_nvenc", "w")
+            self.codec = av.CodecContext.create("h264_v4l2m2m", "w")
+            print("encoder created")
             self.codec.width = frame.width
             self.codec.height = frame.height
-            self.codec.bit_rate = self.target_bitrate
-            self.codec.pix_fmt = "yuv420p"
-            self.codec.framerate = fractions.Fraction(30, 1)
+            self.codec.pix_fmt = "yuv420p" # NVENC usually requires yuv420p
+            
+            # self.codec.options = {
+            #     "preset": "p1",             # p1 is "fastest/lowest latency" in NVENC
+            #     "tune": "ull",              # Ultra-Low Latency
+            #     "rc": "vbr",                # Variable Bitrate
+            #     "cq": "24",                 # Constant Quality (similar to CRF)
+            #     "delay": "0",               # Force zero-frame delay
+            #     "forced-idr": "1",          # Ensure I-frames are clean
+            # }
+            self.codec.bit_rate = 8000000
+            self.codec.gop_size = 30
+            self.codec.max_b_frames = 0
+            self.codec.thread_count = 1
             self.codec.time_base = fractions.Fraction(1, 30)
-        
-            self.codec.options = {
-                "preset": "ultrafast",
-                "tune": "zerolatency",
-                "threads": "1",
-                "g": "12",
-            }
+            self.codec.framerate = fractions.Fraction(30, 1)
+            print("encoder configured")
+
             self.frame_count = 0
             force_keyframe = True
         except Exception as e:
-            logger_mp.error(f"[H264 Patch] Initialization failed: {e}")
-            return
+            print(e)
 
     if not force_keyframe and hasattr(self, "frame_count") and self.frame_count % 60 == 0:
         force_keyframe = True
@@ -109,12 +140,20 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
     frame.pict_type = av.video.frame.PictureType.I if force_keyframe else av.video.frame.PictureType.NONE
 
     try:
-        for packet in self.codec.encode(frame):
-            data = bytes(packet)
-            if data:
-                yield from self._split_bitstream(data)
+        t = time.perf_counter()
+        packets = self.codec.encode(frame)
+        encoding_time = (time.perf_counter() - t) * 1000
+        print("encoding time", encoding_time)
     except Exception as e:
-        logger_mp.warning(f"[H264 Patch] Encode error: {e}")
+        print("encoding failed", e)
+
+    total_size = 0
+    for packet in packets :
+        data = bytes(packet)
+        total_size += len(data)
+        if data:
+            yield from self._split_bitstream(data)
+    print("outgoing kbytes", total_size / 1000)
 
 h264.H264Encoder._encode_frame = jetson_software_encode_frame
 
@@ -908,7 +947,6 @@ class RealSenseCamera(BaseCamera):
                 self._latest_depth = None
 
         bgr_numpy = np.asanyarray(color_frame.get_data())
-        print(bgr_numpy.shape, bgr_numpy.dtype)
 
         if self._enable_webrtc:
             self._webrtc_buffer.write(bgr_numpy)
