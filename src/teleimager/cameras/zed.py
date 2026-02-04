@@ -1,19 +1,38 @@
-
 import logging_mp
 import time
 import numpy as np
-import cv2
 
-from teleimager.base_camera import BaseCamera
+from teleimager.cameras.base_camera import BaseCamera
 
 logger_mp = logging_mp.get_logger(__name__)
 
+
 class ZedCamera(BaseCamera):
-    def __init__(self, cam_topic, serial_number, img_shape, fps, 
-                 enable_zmq=True, zmq_port = 55555, enable_webrtc=False, webrtc_port=66666, webrtc_codec=None, enable_depth=False):
+    def __init__(
+        self,
+        cam_topic,
+        serial_number,
+        img_shape,
+        fps,
+        enable_zmq=True,
+        zmq_port=55555,
+        enable_webrtc=False,
+        webrtc_port=66666,
+        webrtc_codec=None,
+        enable_depth=False,
+    ):
 
         self.sl = ZedCamera._try_import()
-        super().__init__(cam_topic, img_shape, fps, enable_zmq, zmq_port, enable_webrtc, webrtc_port, webrtc_codec)
+        super().__init__(
+            cam_topic,
+            img_shape,
+            fps,
+            enable_zmq,
+            zmq_port,
+            enable_webrtc,
+            webrtc_port,
+            webrtc_codec,
+        )
 
         self.serial_number = serial_number
         self.name = f"Zed ({serial_number})"
@@ -46,7 +65,6 @@ class ZedCamera(BaseCamera):
                 )
                 time.sleep(1)  # wait before retrying
 
-
     def _do_connect(self):
         self.zed = self.sl.Camera()
 
@@ -74,39 +92,21 @@ class ZedCamera(BaseCamera):
     def _try_import():
         try:
             import pyzed.sl as sl
+
             return sl
         except Exception as e:
-            raise ImportError(
-                "pyzed is probably not installed"
-            ) from e
-    
+            raise ImportError("pyzed is probably not installed") from e
+
     def _update_frame(self):
-        t = time.perf_counter()
         self._retrieve_images()
-        # print("zed", (time.perf_counter() - t) * 1000)
-
-        # image_left = np.copy(self.image_left.get_data())[..., :3]  # BGR
-        # image_right = np.copy(self.image_right.get_data())[..., :3]  # BGR
-        # # depth = np.copy(self.depth.get_data())
-
-        # t = time.perf_counter()
-        # full_frame = cv2.hconcat([image_left, image_right])
-        # print("hconcat", (time.perf_counter() - t) * 1000)
         full_frame = np.copy(self.image_both.get_data())[..., :3]
 
-        if self._enable_webrtc:
+        if self.enable_webrtc:
             self._webrtc_buffer.write(full_frame)
 
-        # if self._enable_zmq:
-        #     t = time.perf_counter()
-        #     # buf = cv2.imencode(".jpg", full_frame)[1].tobytes()
-        #     buf = self.jpeg_encoder.encode(full_frame, quality=85)
-        #     print("jpeg", (time.perf_counter() - t) * 1000)
-        #     self._zmq_buffer.write(buf)
-        
         if not self._ready.is_set():
             self._ready.set()
-    
+
     def _retrieve_images(self):
         if self.zed is None:
             raise RuntimeError(f"Not connected to {self.name}")
