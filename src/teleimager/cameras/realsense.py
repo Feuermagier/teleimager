@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 
-from teleimager.base_camera import BaseCamera
+from teleimager.cameras.base_camera import BaseCamera
 
 logger_mp = logging_mp.get_logger(__name__, level=logging_mp.INFO)
 

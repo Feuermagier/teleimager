@@ -155,7 +155,7 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
         self.codec = None
 
     if self.codec is None:
-        if True:
+        if False:
             # software encoder, necessary for jetson
             self.codec = av.CodecContext.create("libx264", "w")
             self.codec.width = frame.width
@@ -193,10 +193,55 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
                 "preset": "p1",  # p1 is "fastest/lowest latency" in NVENC
                 "tune": "ull",  # Ultra-Low Latency
                 "rc": "vbr",  # Variable Bitrate
-                "cq": "24",  # Constant Quality (similar to CRF)
+                "cq": "22",  # Constant Quality (similar to CRF)
                 "delay": "0",  # Force zero-frame delay
                 "forced-idr": "1",  # Ensure I-frames are clean
+                "g": "60",
+                "bf": "0",
+                "rc-lookahead": "0",
+                "no-scenecut": "1",
             }
+            # self.codec.options = {
+            #     "preset": "p1",  # p1 is "fastest/lowest latency" in NVENC
+            #     "tune": "ull",  # Ultra-Low Latency
+            #     "rc": "cbr_ld_hq",  # constant low-delay high-quality bitrate
+            #     # "cq": "22",  # Constant Quality (similar to CRF)
+            #     "delay": "0",  # Force zero-frame delay
+            #     "forced-idr": "1",  # Ensure I-frames are clean
+            #     "bufsize": str(self.target_bitrate // 30),  # ~1 frame buffer
+            #     "maxrate": str(self.target_bitrate),
+            #     "bf": "0", # disable b-frames which increase latency
+            #     "g": "30",      # 1 second GOP at 30fps to allow faster recovery on packet loss
+            #     "keyint_min": "30",
+
+            #     # specific nvenc settings for low latency
+            #     "rc-lookahead": "0",     # disable lookahead
+            #     "no-scenecut": "1",      # prevent sudden I-frame bursts
+            #     "spatial_aq": "1",       # improves perceptual quality
+            #     "temporal_aq": "0",      # disable (adds latency)
+            #     "zerolatency": "1",      # enforce no reordering
+            # }
+            # self.codec.options = {
+            #     # "profile": "main",
+            #     "preset": "p1",  # p1 is "fastest/lowest latency" in NVENC
+            #     "tune": "ull",  # Ultra-Low Latency
+            #     "rc": "cbr_ld_hq",  # constant low-delay high-quality bitrate
+            #     # "cq": "22",  # Constant Quality (similar to CRF)
+            #     "delay": "0",  # Force zero-frame delay
+            #     # "forced-idr": "1",  # Ensure I-frames are clean
+            #     "bufsize": str(self.target_bitrate // 5),  # ~1 frame buffer
+            #     "maxrate": str(self.target_bitrate),
+            #     "bf": "0", # disable b-frames which increase latency
+            #     "g": "30",      # 1 second GOP at 30fps to allow faster recovery on packet loss
+            #     "keyint_min": "30",
+
+            #     # specific nvenc settings for low latency
+            #     "rc-lookahead": "0",     # disable lookahead
+            #     "no-scenecut": "1",      # prevent sudden I-frame bursts
+            #     "spatial_aq": "1",       # improves perceptual quality
+            #     "aq-strength": "8",
+            #     "temporal_aq": "0",      # disable (adds latency)
+            # }
 
         self.frame_count = 0
         force_keyframe = True
@@ -212,9 +257,9 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
     )
 
     try:
-        t = time.perf_counter()
+        # t = time.perf_counter()
         packets = self.codec.encode(frame)
-        encoding_time = (time.perf_counter() - t) * 1000
+        # encoding_time = (time.perf_counter() - t) * 1000
         # print("encoding time", encoding_time)
     except Exception as e:
         print("encoding failed", e)

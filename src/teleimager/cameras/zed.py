@@ -80,6 +80,11 @@ class ZedCamera(BaseCamera):
             logger_mp.error(f"Failed to open ZED camera: {err}")
             raise RuntimeError(f"Failed to open ZED camera: {err}")
 
+        # fix white balance and exposure
+        self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.WHITEBALANCE_TEMPERATURE, 5500)
+        self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.GAIN, 1)
+        self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.EXPOSURE, 14)
+
         self.image_left = self.sl.Mat()
         self.image_right = self.sl.Mat()
         self.image_both = self.sl.Mat()

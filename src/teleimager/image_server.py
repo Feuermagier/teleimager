@@ -31,7 +31,7 @@ from teleimager.cameras.base_camera import BaseCamera
 from teleimager.cameras.isaac import IsaacSimCamera
 from teleimager.cameras.opencv import OpenCVCamera
 from teleimager.cameras.realsense import RealSenseCamera
-from teleimager.cameras.uvc import UVCCamera
+# from teleimager.cameras.uvc import UVCCamera
 from teleimager.cameras.zed import ZedCamera
 from teleimager.network.webrtc_net import WebRTC_PublisherManager
 from teleimager.network.zmq_net import ZMQ_PublisherManager, ZMQ_Responser
@@ -96,13 +96,15 @@ class CameraFinder:
     def __init__(self, realsense_enable=False, zed_enable=False, verbose=False):
         self.verbose = verbose
         # uvc
-        reload_uvc_driver()
-        import uvc
+        # reload_uvc_driver()
+        # import uvc
 
-        self.uvc_devices = uvc.device_list()
-        self.uid_map = {dev["uid"]: dev for dev in self.uvc_devices}
+        # self.uvc_devices = uvc.device_list()
+        # self.uid_map = {dev["uid"]: dev for dev in self.uvc_devices}
+
         # all video devices
         self.video_paths = self._list_video_paths()
+
         # realsense
         if realsense_enable:
             self.rs_serial_numbers = self._list_realsense_serial_numbers()
@@ -119,39 +121,40 @@ class CameraFinder:
             self.zed_serial_numbers = ZedCamera.find_all()
         else:
             self.zed_serial_numbers = []
-        # rgb & uvc
-        self.uvc_rgb_video_paths = self._list_uvc_rgb_video_paths()
-        self.uvc_rgb_video_ids = [
-            int(v.replace("/dev/video", "")) for v in self.uvc_rgb_video_paths
-        ]
-        self.uvc_rgb_physical_paths = [
-            self._get_ppath_from_vpath(v) for v in self.uvc_rgb_video_paths
-        ]
-        self.uvc_rgb_uids = [
-            self._get_uid_from_ppath(p) for p in self.uvc_rgb_physical_paths
-        ]
-        self.uvc_rgb_dev_info = [self.uid_map.get(uid) for uid in self.uvc_rgb_uids]
-        self.uvc_rgb_serial_numbers = [
-            dev_info.get("serialNumber") if dev_info else None
-            for dev_info in self.uvc_rgb_dev_info
-        ]
-        # all uvc cameras
-        self.uvc_rgb_cameras = {}
-        for vpath, vid, ppath, uid, dev_info, sn in zip(
-            self.uvc_rgb_video_paths,
-            self.uvc_rgb_video_ids,
-            self.uvc_rgb_physical_paths,
-            self.uvc_rgb_uids,
-            self.uvc_rgb_dev_info,
-            self.uvc_rgb_serial_numbers,
-        ):
-            self.uvc_rgb_cameras[vpath] = {
-                "video_id": vid,
-                "physical_path": ppath,
-                "uid": uid,
-                "dev_info": dev_info,
-                "serial_number": sn,
-            }
+
+        # # rgb & uvc
+        # self.uvc_rgb_video_paths = self._list_uvc_rgb_video_paths()
+        # self.uvc_rgb_video_ids = [
+        #     int(v.replace("/dev/video", "")) for v in self.uvc_rgb_video_paths
+        # ]
+        # self.uvc_rgb_physical_paths = [
+        #     self._get_ppath_from_vpath(v) for v in self.uvc_rgb_video_paths
+        # ]
+        # self.uvc_rgb_uids = [
+        #     self._get_uid_from_ppath(p) for p in self.uvc_rgb_physical_paths
+        # ]
+        # self.uvc_rgb_dev_info = [self.uid_map.get(uid) for uid in self.uvc_rgb_uids]
+        # self.uvc_rgb_serial_numbers = [
+        #     dev_info.get("serialNumber") if dev_info else None
+        #     for dev_info in self.uvc_rgb_dev_info
+        # ]
+        # # all uvc cameras
+        # self.uvc_rgb_cameras = {}
+        # for vpath, vid, ppath, uid, dev_info, sn in zip(
+        #     self.uvc_rgb_video_paths,
+        #     self.uvc_rgb_video_ids,
+        #     self.uvc_rgb_physical_paths,
+        #     self.uvc_rgb_uids,
+        #     self.uvc_rgb_dev_info,
+        #     self.uvc_rgb_serial_numbers,
+        # ):
+        #     self.uvc_rgb_cameras[vpath] = {
+        #         "video_id": vid,
+        #         "physical_path": ppath,
+        #         "uid": uid,
+        #         "dev_info": dev_info,
+        #         "serial_number": sn,
+        #     }
         if self.verbose:
             self.info()
 
@@ -361,7 +364,7 @@ class CameraFinder:
             "======================= Camera Discovery Start =================================="
         )
         logger_mp.info("Found video devices: %s", self.video_paths)
-        logger_mp.info("Found RGB video devices: %s", self.uvc_rgb_video_paths)
+        # logger_mp.info("Found RGB video devices: %s", self.uvc_rgb_video_paths)
 
         if self.rs_serial_numbers:
             logger_mp.info(
@@ -377,41 +380,41 @@ class CameraFinder:
             )
             logger_mp.info(f"Zed serial numbers: {self.zed_serial_numbers}")
 
-        for idx, (vpath, cam) in enumerate(self.uvc_rgb_cameras.items(), start=1):
-            logger_mp.info(
-                "----------------------- OpenCV / UVC Camera %d -----------------------------",
-                idx,
-            )
-            logger_mp.info("video_path    : %s", vpath)
-            logger_mp.info("video_id      : %s", cam.get("video_id"))
-            logger_mp.info("serial_number : %s", cam.get("serial_number") or "unknown")
-            logger_mp.info("physical_path : %s", cam.get("physical_path"))
-            logger_mp.info("extra_info:")
+        # for idx, (vpath, cam) in enumerate(self.uvc_rgb_cameras.items(), start=1):
+        #     logger_mp.info(
+        #         "----------------------- OpenCV / UVC Camera %d -----------------------------",
+        #         idx,
+        #     )
+        #     logger_mp.info("video_path    : %s", vpath)
+        #     logger_mp.info("video_id      : %s", cam.get("video_id"))
+        #     logger_mp.info("serial_number : %s", cam.get("serial_number") or "unknown")
+        #     logger_mp.info("physical_path : %s", cam.get("physical_path"))
+        #     logger_mp.info("extra_info:")
 
-            dev_info = cam.get("dev_info")
-            uid = cam.get("uid")
+        #     dev_info = cam.get("dev_info")
+        #     uid = cam.get("uid")
 
-            if dev_info:
-                for k, v in dev_info.items():
-                    logger_mp.info("    %s: %s", k, v)
-                try:
-                    import uvc
+        #     if dev_info:
+        #         for k, v in dev_info.items():
+        #             logger_mp.info("    %s: %s", k, v)
+        #         try:
+        #             import uvc
 
-                    cap = uvc.Capture(uid)
-                    for fmt in cap.available_modes:
-                        logger_mp.info(
-                            "    format: %dx%d@%d %s",
-                            fmt.height,
-                            fmt.width,
-                            fmt.fps,
-                            fmt.format_name,
-                        )
-                    cap.close()
-                    cap = None
-                except Exception as e:
-                    logger_mp.warning("    failed to get formats: %s", e)
-            else:
-                logger_mp.info("    no uvc extra info available")
+        #             cap = uvc.Capture(uid)
+        #             for fmt in cap.available_modes:
+        #                 logger_mp.info(
+        #                     "    format: %dx%d@%d %s",
+        #                     fmt.height,
+        #                     fmt.width,
+        #                     fmt.fps,
+        #                     fmt.format_name,
+        #                 )
+        #             cap.close()
+        #             cap = None
+        #         except Exception as e:
+        #             logger_mp.warning("    failed to get formats: %s", e)
+        #     else:
+        #         logger_mp.info("    no uvc extra info available")
 
         logger_mp.info(
             "=========================== Camera Discovery End ================================"
@@ -438,7 +441,7 @@ class ImageServer:
             self._cam_finder = CameraFinder(realsense_enable, camera_finder_verbose)
         self._responser = ZMQ_Responser(self._cam_config)
         self._zmq_publisher_manager = ZMQ_PublisherManager.get_instance()
-        self._webrtc_publisher_manager = WebRTC_PublisherManager.get_instance()
+        self._webrtc_publisher_manager = WebRTC_PublisherManager(CERT_PEM_PATH, KEY_PEM_PATH)
         self._publisher_threads = []  # keep references for graceful join
 
         try:

@@ -73,12 +73,11 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/0e/14/cf5d2a98a66fdfe258f6b036cda570f704a644fa861d7883a34bc359501e/pylibsrtp-1.0.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/de/e4/1ba6f44e491c4eece978685230dde56b14d51a0365bc1b774ddaa94d14cd/pyopengl-3.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d1/81/ef2b1dfd1862567d573a4fdbc9f969067621764fbb74338496840a1d2977/pyopenssl-25.3.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/e8/0cbd6e4f086a3b9261b2539ab5ddb1e3ba0c94d45b47832594d4b4607586/PyTurboJPEG-1.8.2.tar.gz
-      - pypi: git+https://github.com/pupil-labs/pyuvc.git#7e422204370af337b1a9eef011bfab1e04509280
       - pypi: https://files.pythonhosted.org/packages/7a/1e/7acc4f0e74c4b3d9531e24739e0ab832a5edf40e64fbae1a9c01941cabd7/pyyaml-6.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/30/76/8f099f9d6482450428b17c4d6b241281af7ce6a9de8149ca8c1c649f6792/pyzmq-27.1.0-cp310-cp310-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/7a/b0178788f8dc6cafce37a212c99565fa1fe7872c70c6c9c1e1a372d9d88f/rich-14.2.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/b7/fe/8b992ebbba6a58cc9aeb91e63c9a1f277d0caad4fd87c5ff6c60ec9a4330/simplejpeg-1.9.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
       - pypi: https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/35/9f/06b765d45c0e44e8ecf0fe15c9eacbbde342bb5b7561c46944f107bfb6c3/yarl-1.22.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
@@ -147,12 +146,11 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/57/3f/76a841978877ae13eac0d4af412c13bbd5d83b3df2c1f5f2175f2e0f68e5/pylibsrtp-1.0.0-cp310-abi3-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl
       - pypi: https://files.pythonhosted.org/packages/de/e4/1ba6f44e491c4eece978685230dde56b14d51a0365bc1b774ddaa94d14cd/pyopengl-3.1.10-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/d1/81/ef2b1dfd1862567d573a4fdbc9f969067621764fbb74338496840a1d2977/pyopenssl-25.3.0-py3-none-any.whl
-      - pypi: https://files.pythonhosted.org/packages/d2/e8/0cbd6e4f086a3b9261b2539ab5ddb1e3ba0c94d45b47832594d4b4607586/PyTurboJPEG-1.8.2.tar.gz
-      - pypi: git+https://github.com/pupil-labs/pyuvc.git#7e422204370af337b1a9eef011bfab1e04509280
       - pypi: https://files.pythonhosted.org/packages/43/f7/0e6a5ae5599c838c696adb4e6330a59f463265bfa1e116cfd1fbb0abaaae/pyyaml-6.0.3-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
       - pypi: https://files.pythonhosted.org/packages/73/78/7d713284dbe022f6440e391bd1f3c48d9185673878034cfb3939cdf333b2/pyzmq-27.1.0-cp310-cp310-manylinux_2_26_aarch64.manylinux_2_28_aarch64.whl
       - pypi: https://files.pythonhosted.org/packages/1e/db/4254e3eabe8020b458f1a747140d32277ec7a271daf1d235b70dc0b4e6e3/requests-2.32.5-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/25/7a/b0178788f8dc6cafce37a212c99565fa1fe7872c70c6c9c1e1a372d9d88f/rich-14.2.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/ad/cc/2de631b685ef1847f581a8ce16ee894d716964bf8edeaa5da8e7f14d5a9a/simplejpeg-1.9.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
       - pypi: https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/e2/7f/df1b6949b1fa1aa9ff6de6e2631876ad4b73c4437822026e85d8acb56bb1/yarl-1.22.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
@@ -1165,24 +1163,6 @@ packages:
   - pytest-xdist ; extra == 'test'
   - setuptools ; extra == 'test'
   requires_python: '>=3.6'
-- pypi: git+https://github.com/pupil-labs/pyuvc.git#7e422204370af337b1a9eef011bfab1e04509280
-  name: pupil-labs-uvc
-  version: 1.0.1.dev3+g7e4222043
-  requires_dist:
-  - numpy
-  - importlib-metadata ; python_full_version < '3.8'
-  - furo ; extra == 'docs'
-  - jaraco-packaging>=9 ; extra == 'docs'
-  - rst-linker>=1.9 ; extra == 'docs'
-  - sphinx ; extra == 'docs'
-  - opencv-python ; extra == 'example'
-  - rich ; extra == 'example'
-  - pytest>=6 ; extra == 'testing'
-  - pytest-checkdocs>=2.4 ; extra == 'testing'
-  - pytest-cov ; extra == 'testing'
-  - pytest-enabler>=1.3 ; extra == 'testing'
-  - pytest-mypy>=0.9.1 ; platform_python_implementation != 'PyPy' and extra == 'testing'
-  requires_python: '>=3.6'
 - conda: https://conda.anaconda.org/conda-forge/noarch/pybind11-abi-11-hc364b38_1.conda
   sha256: 9e7fe12f727acd2787fb5816b2049cef4604b7a00ad3e408c5e709c298ce8bf1
   md5: f0599959a2447c1e544e216bddf393fa
@@ -1320,12 +1300,6 @@ packages:
   purls: []
   size: 13184616
   timestamp: 1761172156922
-- pypi: https://files.pythonhosted.org/packages/d2/e8/0cbd6e4f086a3b9261b2539ab5ddb1e3ba0c94d45b47832594d4b4607586/PyTurboJPEG-1.8.2.tar.gz
-  name: pyturbojpeg
-  version: 1.8.2
-  sha256: b7d9625bbb2121b923228fc70d0c2b010b386687501f5b50acec4501222e152b
-  requires_dist:
-  - numpy
 - pypi: https://files.pythonhosted.org/packages/43/f7/0e6a5ae5599c838c696adb4e6330a59f463265bfa1e116cfd1fbb0abaaae/pyyaml-6.0.3-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
   name: pyyaml
   version: 6.0.3
@@ -1394,10 +1368,24 @@ packages:
   - markdown-it-py>=2.2.0
   - pygments>=2.13.0,<3.0.0
   requires_python: '>=3.8.0'
+- pypi: https://files.pythonhosted.org/packages/ad/cc/2de631b685ef1847f581a8ce16ee894d716964bf8edeaa5da8e7f14d5a9a/simplejpeg-1.9.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl
+  name: simplejpeg
+  version: 1.9.0
+  sha256: 10e5a3d659efb836238e8b18fff9392860fb2aa4123cb9c9368318101224a1ac
+  requires_dist:
+  - numpy>=1.19.3
+  requires_python: '>=3.9'
+- pypi: https://files.pythonhosted.org/packages/b7/fe/8b992ebbba6a58cc9aeb91e63c9a1f277d0caad4fd87c5ff6c60ec9a4330/simplejpeg-1.9.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+  name: simplejpeg
+  version: 1.9.0
+  sha256: 06fb63b4623d9725c05432e4798f971d5e2eb657cd59518bf4f8cc6c846bacdf
+  requires_dist:
+  - numpy>=1.19.3
+  requires_python: '>=3.9'
 - pypi: ./
   name: teleimager
   version: 1.5.0
-  sha256: 1120a5ff997de710acf8f6a5d782e43a6857c5cf316215bd9f717f1b996ea30e
+  sha256: 297c32c145f969fe33b29eaad85ebe45fc1dbde1ed27ccaa864d7e2a6974e1eb
   requires_dist:
   - logging-mp
   - opencv-python
@@ -1409,10 +1397,9 @@ packages:
   - pyopengl
   - requests
   - pip
-  - pyturbojpeg>=1.8.2
+  - simplejpeg>=1.7.3
   - aiohttp ; extra == 'server'
   - aiortc ; extra == 'server'
-  - pupil-labs-uvc @ git+https://github.com/pupil-labs/pyuvc.git@master ; extra == 'server'
   requires_python: '>=3.8,<3.11'
 - conda: https://conda.anaconda.org/conda-forge/linux-64/tk-8.6.13-noxft_ha0e22de_103.conda
   sha256: 1544760538a40bcd8ace2b1d8ebe3eb5807ac268641f8acdc18c69c5ebfeaf64

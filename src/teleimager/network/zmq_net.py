@@ -9,7 +9,7 @@ import numpy as np
 import yaml
 import os
 import logging_mp
-from turbojpeg import TurboJPEG
+from simplejpeg import encode_jpeg
 
 from teleimager.ring_buffer import TripleRingBuffer
 
@@ -33,8 +33,6 @@ class ZMQ_PublisherThread(threading.Thread):
         self._running = True
         self._queue = queue.Queue(maxsize=10)  # Limit queue size to prevent memory issues
         self._started = threading.Event()
-
-        self.jpeg_encoder = TurboJPEG()
 
     def send(self, data: Any) -> None:
         """Send data to the publisher queue (thread-safe).
@@ -85,7 +83,7 @@ class ZMQ_PublisherThread(threading.Thread):
                     # encode as jpeg. this can be relatively slow and may bottleneck
                     # sending, so maybe benchmark in the future.
                     # jpeg quality is chosen arbitrarily
-                    data_jpeg = self.jpeg_encoder.encode(data, quality=0.9)
+                    data_jpeg = encode_jpeg(np.ascontiguousarray(data), quality=0.9)
 
                     try:
                         self._socket.send(data_jpeg, zmq.NOBLOCK)
@@ -93,18 +91,11 @@ class ZMQ_PublisherThread(threading.Thread):
                         logger_mp.warning(f"High water mark reached for at {self._host}:{self._port}, dropping message")
                     except zmq.ZMQError as e:
                         logger_mp.error(f"Failed to publish to at {self._host}:{self._port}: {e}")
-                        break
+                        raise
 
                 except queue.Empty:
                     # Queue was empty, just continue
                     continue
-                except Exception as e:
-                    if self._running:
-                        logger_mp.error(f"Error in publisher loop: {e}")
-                    break
-
-        except Exception as e:
-            logger_mp.error(f"Failed to initialize publisher socket: {e}")
         finally:
             # Ensure socket is closed when thread exits
             if self._socket:

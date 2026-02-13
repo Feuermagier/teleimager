@@ -1353,15 +1353,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pupil-labs-uvc"
-version = "1.0.1.dev3+g7e4222043"
-source = { git = "https://github.com/pupil-labs/pyuvc.git?rev=master#7e422204370af337b1a9eef011bfab1e04509280" }
-dependencies = [
-    { name = "numpy", version = "1.24.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
-    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
-]
-
-[[package]]
 name = "pycparser"
 version = "2.23"
 source = { registry = "https://pypi.org/simple" }
@@ -1673,6 +1664,69 @@ wheels = [
 ]
 
 [[package]]
+name = "simplejpeg"
+version = "1.7.3"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.9' and platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "python_full_version < '3.9' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "(python_full_version < '3.9' and platform_machine != 'arm64' and sys_platform == 'darwin') or (python_full_version < '3.9' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version < '3.9' and sys_platform != 'darwin' and sys_platform != 'linux')",
+]
+dependencies = [
+    { name = "numpy", version = "1.24.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/73/cf/880b610922df9dffdbd3342130857ef79e1a3d48f889be504268ea35ea3a/simplejpeg-1.7.3.tar.gz", hash = "sha256:c2904cf986b1d79aa8663b29c9049ac4752035de0be779cf127826f88574feb7", size = 5792011, upload-time = "2024-06-20T12:19:43.206Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b2/7c/715cc38f8e971c3f6d4f1fa7afc5b8489529e4113161558f28702206a6cc/simplejpeg-1.7.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:bf9cb941f980d884145d2b50b7991b5e38e9796da29433b8b768d883b9ea9fab", size = 467315, upload-time = "2024-06-20T12:18:48.604Z" },
+    { url = "https://files.pythonhosted.org/packages/26/fc/22ce90964eede63d2a2d3efa7a76dff48468145efe817ee75cdfe1b91849/simplejpeg-1.7.3-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:99e8a0d74b4686137157255d9cd0eb13c175d58fb7071b583449b637be719c57", size = 425396, upload-time = "2024-06-20T12:18:51.005Z" },
+    { url = "https://files.pythonhosted.org/packages/1a/9c/192d36d7de5efd99e1a5ebf1aae90d3c833cc0909e966f50be18755dacb1/simplejpeg-1.7.3-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:81daff34169e5a059720240c5644db651213aedab0fc61f580fc6c7b47df57b1", size = 424591, upload-time = "2024-06-20T12:18:52.271Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/d8/d22a17fa6221c9fb1530fa9542e6ef56a547595bf738316505526e51668b/simplejpeg-1.7.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4a0124e46c0173b1585e22c089907fbd2c4681b5157a25fd85e8eb8934b52380", size = 407287, upload-time = "2024-06-20T12:18:54.306Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/45/690550d4a099263141307d3e439715acfb0817e6dd31804ea15ee7011f59/simplejpeg-1.7.3-cp310-cp310-win32.whl", hash = "sha256:dd4ef0191476322fc111737bfa143a7633559aedf7fe34ffe1c4dc4a48fe32ca", size = 260829, upload-time = "2024-06-20T12:18:56.181Z" },
+    { url = "https://files.pythonhosted.org/packages/68/59/68fbd722c8a4a6abefaa4cd1a1b5447380a1e0e26663b8dc90e133c56978/simplejpeg-1.7.3-cp310-cp310-win_amd64.whl", hash = "sha256:f1c091510f402226e3569ccd4283755877420d3d1dd9cbeef0458096356134d8", size = 291763, upload-time = "2024-06-20T12:18:57.282Z" },
+    { url = "https://files.pythonhosted.org/packages/69/c7/056e1e44950b9ec8bb377478decd25a49a6f9722729cf4aca46a46d76ac4/simplejpeg-1.7.3-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:8ff5abe540323707ab831f7da5f5d04b69853d7788f91143c10de48021c260cf", size = 466636, upload-time = "2024-06-20T12:19:24.185Z" },
+    { url = "https://files.pythonhosted.org/packages/66/d8/c9846bae11d7f3f43e75c66433559aaf978f6cfff28702758bf3cb2d47fa/simplejpeg-1.7.3-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:f6cf61c5f48dbd9c5c26be3243efba5d65d71e15a791062d5d7086d24c83d2f8", size = 424147, upload-time = "2024-06-20T12:19:25.611Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/06/221d0d67388254412f70fd6ec7a1caf0e3a87993be01bf9d00797d3e85c0/simplejpeg-1.7.3-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5a5fad23f0aac95d8a4a03ca84c36af98ba3ad3e319fc63ae1e725d0c4b93853", size = 425170, upload-time = "2024-06-20T12:19:26.827Z" },
+    { url = "https://files.pythonhosted.org/packages/ba/55/1aad4ad8984192bba244374a58b5962796ee67f4fdaf14fd7175ce85b758/simplejpeg-1.7.3-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f5939e57846a1cf77f251446df0b3031283cf20cb6b44eeb3a293628fc58cb6", size = 407890, upload-time = "2024-06-20T12:19:28.677Z" },
+    { url = "https://files.pythonhosted.org/packages/2f/27/fe998360f9ae92a9b56775cccb532860b2c06ff32c05f0e4fd9d9eaa49dd/simplejpeg-1.7.3-cp38-cp38-win32.whl", hash = "sha256:015adb438f2c0b16cb50ee92c657d3026083dc844614a6b45db26c16ee44118d", size = 261636, upload-time = "2024-06-20T12:19:30.044Z" },
+    { url = "https://files.pythonhosted.org/packages/b4/77/3a2b1967f0e1d5594f7f30e8998169c29596f6e62f96a3c3b23ec74e8783/simplejpeg-1.7.3-cp38-cp38-win_amd64.whl", hash = "sha256:997cc41ead8bb0ff23355980ba4f993d2091f681bc7da8aaaacab331c4ebb27e", size = 292744, upload-time = "2024-06-20T12:19:31.532Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/4b/3446f543dc8bccdfd72c00afae395cbd951892cf78970c1aef122034cf76/simplejpeg-1.7.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:3ecc1baf957cc4e38895738d732a9f36f7044a34ef00802a5215b0c540626952", size = 467652, upload-time = "2024-06-20T12:19:33.862Z" },
+    { url = "https://files.pythonhosted.org/packages/11/05/be0ad202f2bcf92bc39306a56c23b9b175fe31cbd36a5af9496067bdefd7/simplejpeg-1.7.3-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:ea7d7d8eab2d3fa38aeafa460126440bae6c4dc7813f1e003eb3d576e0332012", size = 425477, upload-time = "2024-06-20T12:19:36.139Z" },
+    { url = "https://files.pythonhosted.org/packages/07/65/ab0e6aa9166c51c57db88926f801af922f5ba354ab642ba8f59628e266fe/simplejpeg-1.7.3-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7e6308840e3e55aa827e94caa7aa87b5682b7b52cf67171759be8333c8e468b4", size = 424621, upload-time = "2024-06-20T12:19:38.022Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/85/bc77931f057c709fa2e01ceee38381db25a3869fe4a74f224b41e8ce72c8/simplejpeg-1.7.3-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:159a89b1891669ec80f05ddf0a222e05c2d5876c7129f4c34e11824529694b29", size = 407112, upload-time = "2024-06-20T12:19:39.293Z" },
+    { url = "https://files.pythonhosted.org/packages/72/1e/46be275a3c3e0267121e1700fc9573b0cadfece99e56b98174605a571e7b/simplejpeg-1.7.3-cp39-cp39-win32.whl", hash = "sha256:77ff907178149eed893f63e82ec657366f9f888b200ea6d7a2f1e3caca834770", size = 260997, upload-time = "2024-06-20T12:19:40.53Z" },
+    { url = "https://files.pythonhosted.org/packages/25/d8/bacebdb4704cf413ae469befb9232716a1efcadbf9e9be44d7f8eee8c7a9/simplejpeg-1.7.3-cp39-cp39-win_amd64.whl", hash = "sha256:6021063ad782eb4305e8ccc33f622d08736551896f6b827d3834dd9ac7b11f77", size = 291747, upload-time = "2024-06-20T12:19:41.887Z" },
+]
+
+[[package]]
+name = "simplejpeg"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.10' and sys_platform == 'darwin'",
+    "python_full_version >= '3.10' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "(python_full_version >= '3.10' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version >= '3.10' and sys_platform != 'darwin' and sys_platform != 'linux')",
+    "python_full_version == '3.9.*' and platform_machine == 'arm64' and sys_platform == 'darwin'",
+    "python_full_version == '3.9.*' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "(python_full_version == '3.9.*' and platform_machine != 'arm64' and sys_platform == 'darwin') or (python_full_version == '3.9.*' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.9.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
+]
+dependencies = [
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/90/64/da60f0ba80570f9a36c9b6e055f4364bda2c547715296d5773d2ea6d5a60/simplejpeg-1.9.0.tar.gz", hash = "sha256:5ac7d9489eeb812c2e7ea5c283994a29d9fefdfe5ed7b86c09d485e0dd366689", size = 3965764, upload-time = "2025-10-10T10:58:08.197Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/82/1befd1e0421c73e058eb72a18ddeecf9e3852c1a8e271ecb828aa6a7473d/simplejpeg-1.9.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3c114fec003c34eaeb9c945c3bf552bbaa510d67340f18556a683634b1892df0", size = 424295, upload-time = "2025-10-10T10:57:21.464Z" },
+    { url = "https://files.pythonhosted.org/packages/30/e9/854abddb49232db0d181abbf01b3a94204035cb3f3115b25d6058e762c5d/simplejpeg-1.9.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:598c187e2c22a0f27ebec497f749b0b3dd3757baebe11a928434b6f447715386", size = 400323, upload-time = "2025-10-10T10:57:22.993Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/cc/2de631b685ef1847f581a8ce16ee894d716964bf8edeaa5da8e7f14d5a9a/simplejpeg-1.9.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:10e5a3d659efb836238e8b18fff9392860fb2aa4123cb9c9368318101224a1ac", size = 447003, upload-time = "2025-10-10T10:57:24.875Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/fe/8b992ebbba6a58cc9aeb91e63c9a1f277d0caad4fd87c5ff6c60ec9a4330/simplejpeg-1.9.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:06fb63b4623d9725c05432e4798f971d5e2eb657cd59518bf4f8cc6c846bacdf", size = 404567, upload-time = "2025-10-10T10:57:26.188Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/52/36536604a1dcfe6dcc221ad21bab4bea16ef4e1db03df18b1eb46ed1d148/simplejpeg-1.9.0-cp310-cp310-win_amd64.whl", hash = "sha256:d22bfbb70a333cee303e921f7747cd714dd7b22f29a204979b8c91049c4c0d40", size = 292833, upload-time = "2025-10-10T10:57:27.818Z" },
+    { url = "https://files.pythonhosted.org/packages/09/07/93a2ae094be9036414be530755f209dabed83db0c3aebc7321addb9be114/simplejpeg-1.9.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:e3e6de7854322d645b43a7672e779c2f1324bed03778a8f795a839bf9ad6624e", size = 424606, upload-time = "2025-10-10T10:58:01.332Z" },
+    { url = "https://files.pythonhosted.org/packages/89/10/e64bde42c5204bc42a41de425d0f2da00c1d94c24e72b15fd83b771a5643/simplejpeg-1.9.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:063517ff064c0350ced611f164e9ab771233538a050557692cc83048bceffd9f", size = 400464, upload-time = "2025-10-10T10:58:02.91Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/87/5a703fe0f84861ef5c7cd2a91a3a9c3a97aef4994a31b3975e2b9dfdae15/simplejpeg-1.9.0-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:88a0490a128ba5b55bfa05e566984dd585996283356589a523a1f901540041b7", size = 447249, upload-time = "2025-10-10T10:58:04.205Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/b6/6fdf3781866e4463ef0018ba365ca9a51c7021f7c3d1356a47270b9c0ee8/simplejpeg-1.9.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:1457ebcf3268567b0db5103d2fec17f027f991eb2b7589eb4997ae340e4e417b", size = 404827, upload-time = "2025-10-10T10:58:05.462Z" },
+    { url = "https://files.pythonhosted.org/packages/09/26/d2b5118f8fc32ba87d6e48c57b0d187ef31ae4b45f7ad26abf7cf5dd2f8b/simplejpeg-1.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:8a191ea4af249c58e8827064ad5f5816ca40584112a3936c9a06195ccec8d170", size = 292954, upload-time = "2025-10-10T10:58:06.695Z" },
+]
+
+[[package]]
 name = "teleimager"
 version = "1.5.0"
 source = { editable = "." }
@@ -1691,6 +1745,8 @@ dependencies = [
     { name = "pyzmq" },
     { name = "requests", version = "2.32.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
+    { name = "simplejpeg", version = "1.7.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
+    { name = "simplejpeg", version = "1.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
 ]
 
 [package.optional-dependencies]
@@ -1700,7 +1756,6 @@ server = [
     { name = "aiortc", version = "1.9.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "aiortc", version = "1.13.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
     { name = "aiortc", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-    { name = "pupil-labs-uvc" },
 ]
 
 [package.metadata]
@@ -1713,12 +1768,12 @@ requires-dist = [
     { name = "opencv-python-headless" },
     { name = "pip" },
     { name = "psutil", specifier = ">=7.2.1" },
-    { name = "pupil-labs-uvc", marker = "extra == 'server'", git = "https://github.com/pupil-labs/pyuvc.git?rev=master" },
     { name = "pyopengl" },
     { name = "pyturbojpeg", specifier = ">=1.8.2" },
     { name = "pyyaml" },
     { name = "pyzmq" },
     { name = "requests" },
+    { name = "simplejpeg", specifier = ">=1.7.3" },
 ]
 provides-extras = ["server"]
 

@@ -1,7 +1,7 @@
 import logging_mp
 
 
-from teleimager.base_camera import BaseCamera
+from teleimager.cameras.base_camera import BaseCamera
 
 logger_mp = logging_mp.get_logger(__name__, level=logging_mp.INFO)
 
