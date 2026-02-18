@@ -52,15 +52,17 @@ class ImageClient:
                 self._host, self._cam_config["head_camera"]["zmq_port"]
             )
 
-        if self._cam_config["left_wrist_camera"]["enable_zmq"]:
-            self._subscriber_manager.subscribe(
-                self._host, self._cam_config["left_wrist_camera"]["zmq_port"]
-            )
+        if "left_wrist_camera" in self._cam_config:
+            if self._cam_config["left_wrist_camera"]["enable_zmq"]:
+                self._subscriber_manager.subscribe(
+                    self._host, self._cam_config["left_wrist_camera"]["zmq_port"]
+                )
 
-        if self._cam_config["right_wrist_camera"]["enable_zmq"]:
-            self._subscriber_manager.subscribe(
-                self._host, self._cam_config["right_wrist_camera"]["zmq_port"]
-            )
+        if "right_wrist_camera" in self._cam_config:
+            if self._cam_config["right_wrist_camera"]["enable_zmq"]:
+                self._subscriber_manager.subscribe(
+                    self._host, self._cam_config["right_wrist_camera"]["zmq_port"]
+                )
 
         if (
             not self._cam_config["head_camera"]["enable_zmq"]
