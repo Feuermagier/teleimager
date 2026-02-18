@@ -23,7 +23,7 @@ import time
 import logging_mp
 from teleimager.network.zmq_net import ZMQ_Requester, ZMQ_SubscriberManager
 
-logger_mp = logging_mp.get_logger(__name__, level=logging_mp.INFO)
+logger_mp = logging_mp.getLogger(__name__, level=logging_mp.INFO)
 
 
 # ========================================================

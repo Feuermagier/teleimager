@@ -4,7 +4,7 @@ import numpy as np
 
 from teleimager.cameras.base_camera import BaseCamera
 
-logger_mp = logging_mp.get_logger(__name__)
+logger_mp = logging_mp.getLogger(__name__)
 
 
 class ZedCamera(BaseCamera):

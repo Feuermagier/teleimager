@@ -18,7 +18,7 @@ import fractions
 from typing import Dict, Optional, Tuple, Any
 import logging_mp
 
-logger_mp = logging_mp.get_logger(__name__)
+logger_mp = logging_mp.getLogger(__name__)
 
 INDEX_HTML = """
 <!DOCTYPE html>

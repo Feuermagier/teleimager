@@ -5,7 +5,7 @@ import cv2
 
 from teleimager.cameras.base_camera import BaseCamera
 
-logger_mp = logging_mp.get_logger(__name__, level=logging_mp.INFO)
+logger_mp = logging_mp.getLogger(__name__, level=logging_mp.INFO)
 
 class RealSenseCamera(BaseCamera):
     def __init__(self, cam_topic, serial_number, img_shape, fps, 
