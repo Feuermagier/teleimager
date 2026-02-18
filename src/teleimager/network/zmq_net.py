@@ -13,7 +13,7 @@ from simplejpeg import encode_jpeg
 
 from teleimager.ring_buffer import TripleRingBuffer
 
-logger_mp = logging_mp.getLogger(__name__, level=logging_mp.INFO)
+logger_mp = logging_mp.getLogger(__name__)
 
 class ZMQ_PublisherThread(threading.Thread):
     """Thread that owns a PUB socket and handles publishing via a queue."""

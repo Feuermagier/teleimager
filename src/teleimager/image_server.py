@@ -11,6 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import logging_mp
+logging_mp.basicConfig(level=logging_mp.INFO)
+
 import os
 import argparse
 import glob
@@ -37,7 +41,7 @@ from teleimager.network.webrtc_net import WebRTC_PublisherManager
 from teleimager.network.zmq_net import ZMQ_PublisherManager, ZMQ_Responser
 
 
-logging_mp.basic_config(level=logging_mp.INFO)
+
 logger_mp = logging_mp.getLogger(__name__)
 
 # ========================================================

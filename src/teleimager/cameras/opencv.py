@@ -4,7 +4,7 @@ import cv2
 
 from teleimager.cameras.base_camera import BaseCamera
 
-logger_mp = logging_mp.getLogger(__name__, level=logging_mp.INFO)
+logger_mp = logging_mp.getLogger(__name__)
 
 
 class OpenCVCamera(BaseCamera):
