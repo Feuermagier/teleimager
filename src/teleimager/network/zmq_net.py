@@ -1,4 +1,3 @@
-import cv2
 import time
 import contextlib
 import queue
@@ -9,7 +8,7 @@ import numpy as np
 import yaml
 import os
 import logging_mp
-from simplejpeg import encode_jpeg
+from simplejpeg import encode_jpeg, decode_jpeg
 
 from teleimager.ring_buffer import TripleRingBuffer
 
@@ -83,7 +82,7 @@ class ZMQ_PublisherThread(threading.Thread):
                     # encode as jpeg. this can be relatively slow and may bottleneck
                     # sending, so maybe benchmark in the future.
                     # jpeg quality is chosen arbitrarily
-                    data_jpeg = encode_jpeg(np.ascontiguousarray(data), quality=0.9)
+                    data_jpeg = encode_jpeg(np.ascontiguousarray(data), quality=90)
 
                     try:
                         self._socket.send(data_jpeg, zmq.NOBLOCK)
@@ -226,12 +225,9 @@ class ZMQ_SubscriberThread(threading.Thread):
         """Decode JPEG bytes to OpenCV image."""
         if jpg_bytes is None:
             return None
-        try:
-            np_img = np.frombuffer(jpg_bytes, dtype=np.uint8)
-            return cv2.imdecode(np_img, cv2.IMREAD_COLOR)
-        except Exception as e:
-            logger_mp.warning(f"[ZMQ_SubscriberThread] Failed to decode image: {e}")
-            return None
+
+        np_img = np.frombuffer(jpg_bytes, dtype=np.uint8)
+        return decode_jpeg(np_img)
         
     def _wait_for_start(self, timeout: float = 1.0) -> bool:
         """Wait until socket context is ready"""

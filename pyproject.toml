@@ -15,7 +15,6 @@ dependencies = [
     "pyyaml",
     "pyzmq",
     "psutil>=7.2.1",
-    "opencv-python-headless",
     "pyopengl",
     "requests",
     "pip",
