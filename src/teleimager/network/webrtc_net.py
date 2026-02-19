@@ -186,8 +186,8 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
             self.codec.height = frame.height
             self.codec.bit_rate = self.target_bitrate
             self.codec.pix_fmt = "yuv420p"
-            self.codec.framerate = fractions.Fraction(30, 1)
-            self.codec.time_base = fractions.Fraction(1, 30)
+            self.codec.framerate = fractions.Fraction(60, 1)
+            self.codec.time_base = fractions.Fraction(1, 60)
 
             self.codec.options = {
                 "preset": "p1",  # p1 is "fastest/lowest latency" in NVENC

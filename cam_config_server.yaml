@@ -75,7 +75,7 @@ head_camera:
   image_shape: [720, 2560]
   binocular: true
   # frame per second
-  fps: 30
+  fps: 60
 
   # Camera identifiers (choose one or more):
   #   - video_id: X        → /dev/videoX  (e.g. 0 → /dev/video0)
