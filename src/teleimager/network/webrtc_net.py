@@ -259,8 +259,7 @@ def jetson_software_encode_frame(self, frame: av.VideoFrame, force_keyframe: boo
     try:
         # t = time.perf_counter()
         packets = self.codec.encode(frame)
-        # encoding_time = (time.perf_counter() - t) * 1000
-        # print("encoding time", encoding_time)
+        # print("encoding time", (time.perf_counter() - t) * 1000)
     except Exception as e:
         print("encoding failed", e)
 
@@ -362,7 +361,8 @@ class WebRTC_PublisherThread(threading.Thread):
         self._pcs = set()
         self._start_event = threading.Event()
         self._stop_event = threading.Event()
-        self._frame_queue = queue.Queue(maxsize=1)
+        self._latest_frame = None
+        self._frame_available_event = asyncio.Event()
 
         self._bgr_track: Optional[BGRArrayVideoStreamTrack] = None
         self._relay: Optional[MediaRelay] = None
@@ -504,17 +504,11 @@ class WebRTC_PublisherThread(threading.Thread):
 
             # Frame Pushing Loop
             while not self._stop_event.is_set():
-                try:
-                    # Non-blocking check for new frames
-                    if not self._frame_queue.empty():
-                        # Get frame (no pickling overhead in Threads!)
-                        frame = self._frame_queue.get_nowait()
-                        self._bgr_track.push_frame(frame, loop=self._loop)
-
-                    # CRITICAL: Yield control to asyncio loop to handle WebRTC packets
-                    await asyncio.sleep(0)
-                except Exception:
-                    await asyncio.sleep(0.005)
+                await self._frame_available_event.wait()
+                self._frame_available_event.clear()
+                frame, t = self._latest_frame
+                # print("webrtc", (time.perf_counter() - t) * 1000)
+                self._bgr_track.push_frame(frame, loop=self._loop)
 
         try:
             self._loop.run_until_complete(_main())
@@ -524,17 +518,10 @@ class WebRTC_PublisherThread(threading.Thread):
             if self._loop:
                 self._loop.close()
 
-    def send(self, data: np.ndarray):
+    def send(self, data):
         """Send data to the processing thread."""
-        # Simple drop-frame logic if queue is full
-        if not self._frame_queue.full():
-            self._frame_queue.put(data)
-        else:
-            try:
-                self._frame_queue.get_nowait()
-                self._frame_queue.put(data)
-            except:
-                pass
+        self._latest_frame = data
+        self._loop.call_soon_threadsafe(self._frame_available_event.set)
 
     def stop(self):
         self._stop_event.set()

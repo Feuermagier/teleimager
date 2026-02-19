@@ -695,12 +695,12 @@ class ImageServer:
 
                 # usually the camera ensures constant fps, but to be sure we sleep here again
                 # TODO this may be problematic if we wait slightly too long and jump into the next frame
-                # next_frame_time += interval
-                # sleep_time = next_frame_time - time.monotonic()
-                # if sleep_time > 0:
-                #     time.sleep(sleep_time)
-                # else:
-                #     next_frame_time = time.monotonic()
+                next_frame_time += interval
+                sleep_time = next_frame_time - time.monotonic()
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                else:
+                    next_frame_time = time.monotonic()
         except Exception as e:
             logger_mp.error(
                 f"[Image Server] Failed to update frames for {cam_topic} camera: {e}"

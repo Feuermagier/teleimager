@@ -39,8 +39,6 @@ class ZMQ_PublisherThread(threading.Thread):
         Args:
             data: The data to publish
         """
-        if not isinstance(data, np.ndarray):
-            raise TypeError(f"PublisherThread expects numpy array, got {type(data)}")
 
         try:
             self._queue.put_nowait(data)
@@ -73,7 +71,9 @@ class ZMQ_PublisherThread(threading.Thread):
             while self._running:
                 try:
                     # Get data from queue with timeout to allow checking _running
-                    data = self._queue.get(timeout=0.1)
+                    data, t = self._queue.get(timeout=0.1)
+
+                    # print("zmq", (time.perf_counter() - t) * 1000)
 
                     # Check for sentinel value
                     if data is None:

@@ -41,7 +41,7 @@ class ZedCamera(BaseCamera):
         self.reconnect_attempts = 3
 
         self.resolution = self.sl.RESOLUTION["HD720"]
-        self.depth_mode = self.sl.DEPTH_MODE["NEURAL"]
+        self.depth_mode = self.sl.DEPTH_MODE["NONE"]
 
         self._connect()
 
@@ -104,10 +104,12 @@ class ZedCamera(BaseCamera):
 
     def _update_frame(self):
         self._retrieve_images()
+
+        t = time.perf_counter()
         full_frame = np.copy(self.image_both.get_data())[..., :3]
 
         if self.enable_webrtc:
-            self._webrtc_buffer.write(full_frame)
+            self._webrtc_buffer.write((full_frame, t))
 
         if not self._ready.is_set():
             self._ready.set()
