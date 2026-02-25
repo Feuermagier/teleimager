@@ -53,7 +53,7 @@ head_camera:
 
   # if enable_zmq and enable_webrtc are both false, the camera will not start
   # Set to true to enable ZMQ publishing, false to disable
-  enable_zmq: false
+  enable_zmq: true
   # Port to publish camera stream, e.g. zmq tcp://*:55555.  image_client.py should connect to the same port
   zmq_port : 55555
   # Set to true to enable WebRTC publishing, false to disable

@@ -83,7 +83,7 @@ class ZedCamera(BaseCamera):
         # fix white balance and exposure
         self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.WHITEBALANCE_TEMPERATURE, 5500)
         self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.GAIN, 1)
-        self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.EXPOSURE, 14)
+        self.zed.set_camera_settings(self.sl.VIDEO_SETTINGS.EXPOSURE, 22)
 
         self.image_left = self.sl.Mat()
         self.image_right = self.sl.Mat()
